@@ -15,7 +15,7 @@ management:
       exposure:
         include: "*"
 stripe:
-  secret-key: sk_test_51TO1lwQk0uRj6eLsl0splMVnh6Ldn90vACk1EeohOhXW8Zf1sycM5fjzSWhnUxtXOcFj9nHywYuIOcXVU0zMZZoW00uZ2qcrb5
+  #secret-key: sk_test_51TO1lwQk0uRj6eLsl0splMVnh6Ldn90vACk1EeohOhXW8Zf1sycM5fjzSWhnUxtXOcFj9nHywYuIOcXVU0zMZZoW00uZ2qcrb5
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceId:-}%X{spanId:-}] %logger{36} - %msg%n"

@@ -16,7 +16,7 @@ cart:
     rest:
       url: https://kafka-16753a04-rajureddy-3ab4.k.aivencloud.com:19417
       username: avnadmin
-      password: AVNS_fZ62eT6MQ64mWuqeVVd
+      #password: AVNS_fZ62eT6MQ64mWuqeVVd
       topic: cart-events
   sql:
     init:
