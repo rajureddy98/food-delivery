@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,
+  restaurant_id UUID NOT NULL,
+  total_amount DECIMAL(10,2) NOT NULL,
+  delivery_fee DECIMAL(10,2) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  delivery_address VARCHAR(1024) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  stripe_payment_id VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id UUID PRIMARY KEY,
+  order_id UUID NOT NULL,
+  menu_item_id UUID NOT NULL,
+  quantity INTEGER NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  item_name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

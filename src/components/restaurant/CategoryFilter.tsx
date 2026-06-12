@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Pizza, Coffee, Soup, Beef, IceCream, Salad } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { listCategories } from '../../services/backend';
 import type { Category } from '../../types';
 
 interface CategoryFilterProps {
@@ -25,12 +25,12 @@ export function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryF
   }, []);
 
   const loadCategories = async () => {
-    const { data } = await supabase
-      .from('categories')
-      .select('*')
-      .order('name');
-
-    if (data) setCategories(data);
+    try {
+      const data = await listCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
   };
 
   return (

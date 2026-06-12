@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
-import { supabase } from '../../lib/supabase';
+import { createOrder, createPaymentIntent } from '../../services/backend';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -17,8 +17,17 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
   const { cartItems, restaurant, getCartTotal, clearCart } = useCart();
   const [address, setAddress] = useState(profile?.default_address || '');
   const [phone, setPhone] = useState(profile?.phone || '');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [paymentMessage, setPaymentMessage] = useState('');
+
+  useEffect(() => {
+    setAddress(profile?.default_address || '');
+    setPhone(profile?.phone || '');
+  }, [profile]);
 
   const subtotal = getCartTotal();
   const deliveryFee = restaurant?.delivery_fee || 0;
@@ -30,37 +39,35 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
 
     setLoading(true);
     setError('');
+    setPaymentMessage('');
 
     try {
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          user_id: user.id,
-          restaurant_id: restaurant.id,
-          total_amount: total,
-          delivery_fee: deliveryFee,
-          delivery_address: address,
-          phone: phone,
-          status: 'pending',
-        })
-        .select()
-        .single();
+      const paymentIntent = await createPaymentIntent({
+        userId: user.id,
+        amount: total,
+        metadata: {
+          restaurantId: restaurant.id,
+          userEmail: user.email,
+        },
+      });
 
-      if (orderError) throw orderError;
-
-      const orderItems = cartItems.map((item) => ({
-        order_id: order.id,
-        menu_item_id: item.menu_item_id,
+      setPaymentMessage('Payment intent created successfully.');
+      console.log('cartItems=', cartItems);
+      const orderResponse = await createOrder({
+        userId: user.id,
+        restaurantId: restaurant.id,
+        totalAmount: total,
+        deliveryFee,
+        deliveryAddress: address,
+        phone,
+        stripePaymentId: paymentIntent.paymentIntentId,
+        items: cartItems.map((item) => ({
+        menuItemId: item.menuItemId,
         quantity: item.quantity,
         price: item.menu_item?.price || 0,
-        item_name: item.menu_item?.name || '',
-      }));
-
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems);
-
-      if (itemsError) throw itemsError;
+        itemName: item.menu_item?.name || '',
+      })),
+      });
 
       await clearCart();
       onSuccess();
@@ -111,6 +118,41 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
           required
           placeholder="Enter your phone number"
         />
+
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <h3 className="font-semibold text-gray-900 mb-3">Payment Information</h3>
+          <div className="space-y-4">
+            <Input
+              label="Card Number"
+              value={cardNumber}
+              onChange={(e) => setCardNumber(e.target.value)}
+              required
+              placeholder="1234 5678 9012 3456"
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Expiry"
+                value={expiry}
+                onChange={(e) => setExpiry(e.target.value)}
+                required
+                placeholder="MM/YY"
+              />
+              <Input
+                label="CVC"
+                value={cvc}
+                onChange={(e) => setCvc(e.target.value)}
+                required
+                placeholder="123"
+              />
+            </div>
+          </div>
+        </div>
+
+        {paymentMessage && (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm">
+            {paymentMessage}
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">

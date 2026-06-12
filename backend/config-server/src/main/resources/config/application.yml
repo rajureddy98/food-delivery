@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: local
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceId:-}%X{spanId:-}] %logger{36} - %msg%n"

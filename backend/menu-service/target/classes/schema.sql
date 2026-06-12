@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS categories (
+  id UUID PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  icon VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS menu_items (
+  id UUID PRIMARY KEY,
+  restaurant_id UUID NOT NULL,
+  category_id UUID NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(1024) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  image_url VARCHAR(1024) NOT NULL,
+  is_vegetarian BOOLEAN DEFAULT FALSE,
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

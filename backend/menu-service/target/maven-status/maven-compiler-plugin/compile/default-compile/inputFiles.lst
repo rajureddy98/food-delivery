@@ -1,0 +1,8 @@
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/MenuServiceApplication.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/controller/CategoryController.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/controller/MenuController.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/model/Category.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/model/MenuItem.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/repository/CategoryRepository.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/repository/MenuItemRepository.java
+/workspaces/food-delivery/backend/menu-service/src/main/java/com/fooddelivery/menu/service/MenuService.java

@@ -1,0 +1,12 @@
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/AuthServiceApplication.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/config/SecurityConfig.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/controller/AuthController.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/exception/GlobalExceptionHandler.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/AuthRequest.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/AuthResponse.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/ProfileUpdateRequest.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/RegisterRequest.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/User.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/model/UserProfile.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/repository/UserRepository.java
+/workspaces/food-delivery/backend/auth-service/src/main/java/com/fooddelivery/auth/service/AuthService.java

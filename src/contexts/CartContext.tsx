@@ -1,7 +1,14 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 import type { CartItem, MenuItem, Restaurant } from '../types';
+import {
+  getCart,
+  addCartItem,
+  updateCartItem,
+  deleteCartItem,
+  fetchRestaurant,
+  fetchMenuItem,
+} from '../services/backend';
 
 interface CartContextType {
   cartItems: CartItem[];
@@ -37,26 +44,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     setLoading(true);
     try {
-      const { data: cart } = await supabase
-        .from('carts')
-        .select('*, cart_items(*, menu_items(*))')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      const cart = await getCart(user.id);
 
-      if (cart) {
-        setCartItems(cart.cart_items || []);
-
-        if (cart.restaurant_id) {
-          const { data: restaurantData } = await supabase
-            .from('restaurants')
-            .select('*')
-            .eq('id', cart.restaurant_id)
-            .single();
-          setRestaurant(restaurantData);
-        }
+      if (cart.restaurantId) {
+        const restaurantData = await fetchRestaurant(cart.restaurantId);
+        setRestaurant(restaurantData);
+      } else {
+        setRestaurant(null);
       }
+
+      const enrichedItems = await Promise.all(
+        cart.items.map(async (item) => {
+          try {
+            const menuItem = await fetchMenuItem(item.menuItemId);
+            return { ...item, menu_item: menuItem } as CartItem;
+          } catch {
+            return item as CartItem;
+          }
+        })
+      );
+
+      setCartItems(enrichedItems);
     } catch (error) {
       console.error('Error loading cart:', error);
+      setCartItems([]);
+      setRestaurant(null);
     } finally {
       setLoading(false);
     }
@@ -66,54 +78,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!user) throw new Error('Must be logged in to add to cart');
 
     try {
-      let { data: cart } = await supabase
-        .from('carts')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (cart && cart.restaurant_id && cart.restaurant_id !== restaurantId) {
-        throw new Error('Cannot add items from different restaurants');
-      }
-
-      if (!cart) {
-        const { data: newCart, error } = await supabase
-          .from('carts')
-          .insert({ user_id: user.id, restaurant_id: restaurantId })
-          .select()
-          .single();
-
-        if (error) throw error;
-        cart = newCart;
-      } else if (!cart.restaurant_id) {
-        await supabase
-          .from('carts')
-          .update({ restaurant_id: restaurantId })
-          .eq('id', cart.id);
-      }
-
-      const { data: existingItem } = await supabase
-        .from('cart_items')
-        .select('*')
-        .eq('cart_id', cart.id)
-        .eq('menu_item_id', menuItem.id)
-        .maybeSingle();
-
-      if (existingItem) {
-        await supabase
-          .from('cart_items')
-          .update({ quantity: existingItem.quantity + 1 })
-          .eq('id', existingItem.id);
-      } else {
-        await supabase
-          .from('cart_items')
-          .insert({
-            cart_id: cart.id,
-            menu_item_id: menuItem.id,
-            quantity: 1,
-          });
-      }
-
+      await addCartItem(user.id, {
+        menuItemId: menuItem.id,
+        restaurantId,
+        quantity: 1,
+      });
       await loadCart();
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -128,11 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      await supabase
-        .from('cart_items')
-        .update({ quantity })
-        .eq('id', cartItemId);
-
+      await updateCartItem(user!.id, cartItemId, { quantity });
       await loadCart();
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -141,11 +106,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const removeFromCart = async (cartItemId: string) => {
     try {
-      await supabase
-        .from('cart_items')
-        .delete()
-        .eq('id', cartItemId);
-
+      await deleteCartItem(user!.id, cartItemId);
       await loadCart();
     } catch (error) {
       console.error('Error removing from cart:', error);
@@ -156,24 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!user) return;
 
     try {
-      const { data: cart } = await supabase
-        .from('carts')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (cart) {
-        await supabase
-          .from('cart_items')
-          .delete()
-          .eq('cart_id', cart.id);
-
-        await supabase
-          .from('carts')
-          .update({ restaurant_id: null })
-          .eq('id', cart.id);
-      }
-
+      await Promise.all(cartItems.map((item) => deleteCartItem(user.id, item.id)));
       setCartItems([]);
       setRestaurant(null);
     } catch (error) {

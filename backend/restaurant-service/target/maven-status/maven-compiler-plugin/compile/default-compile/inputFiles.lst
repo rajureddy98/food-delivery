@@ -1,0 +1,7 @@
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/RestaurantServiceApplication.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/controller/RestaurantController.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/model/Category.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/model/Restaurant.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/repository/CategoryRepository.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/repository/RestaurantRepository.java
+/workspaces/food-delivery/backend/restaurant-service/src/main/java/com/fooddelivery/restaurant/service/RestaurantService.java

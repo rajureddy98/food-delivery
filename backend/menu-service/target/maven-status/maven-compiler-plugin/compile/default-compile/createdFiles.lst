@@ -1,0 +1,8 @@
+com/fooddelivery/menu/MenuServiceApplication.class
+com/fooddelivery/menu/controller/MenuController.class
+com/fooddelivery/menu/repository/MenuItemRepository.class
+com/fooddelivery/menu/model/Category.class
+com/fooddelivery/menu/repository/CategoryRepository.class
+com/fooddelivery/menu/service/MenuService.class
+com/fooddelivery/menu/controller/CategoryController.class
+com/fooddelivery/menu/model/MenuItem.class

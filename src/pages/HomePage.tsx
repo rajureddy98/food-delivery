@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
 import { SearchBar } from '../components/ui/SearchBar';
 import { CategoryFilter } from '../components/restaurant/CategoryFilter';
 import { RestaurantCard } from '../components/restaurant/RestaurantCard';
+import { listRestaurants, listMenuItems } from '../services/backend';
 import type { Restaurant } from '../types';
 
 interface HomePageProps {
@@ -26,15 +26,15 @@ export function HomePage({ onSelectRestaurant }: HomePageProps) {
 
   const loadRestaurants = async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from('restaurants')
-      .select('*')
-      .order('rating', { ascending: false });
-
-    if (data) {
+    try {
+      const data = await listRestaurants();
       setRestaurants(data);
+    } catch (error) {
+      console.error('Error loading restaurants:', error);
+      setRestaurants([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const filterRestaurants = async () => {
@@ -45,24 +45,24 @@ export function HomePage({ onSelectRestaurant }: HomePageProps) {
       filtered = filtered.filter(
         (restaurant) =>
           restaurant.name.toLowerCase().includes(query) ||
-          restaurant.cuisines.some((cuisine) =>
-            cuisine.toLowerCase().includes(query)
+          restaurant.cuisines
+          .split(',')
+          .some(cuisine =>
+            cuisine.trim().toLowerCase().includes(query)
           ) ||
           restaurant.location.toLowerCase().includes(query)
       );
     }
 
     if (selectedCategory) {
-      const { data: menuItems } = await supabase
-        .from('menu_items')
-        .select('restaurant_id')
-        .eq('category_id', selectedCategory);
-
-      if (menuItems) {
+      try {
+        const menuItems = await listMenuItems(undefined, selectedCategory);
         const restaurantIds = new Set(menuItems.map((item) => item.restaurant_id));
         filtered = filtered.filter((restaurant) =>
           restaurantIds.has(restaurant.id)
         );
+      } catch (error) {
+        console.error('Error filtering by category:', error);
       }
     }
 

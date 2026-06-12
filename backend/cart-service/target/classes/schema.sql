@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS carts (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,
+  restaurant_id UUID,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+  id UUID PRIMARY KEY,
+  cart_id UUID NOT NULL,
+  menu_item_id UUID NOT NULL,
+  quantity INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(cart_id, menu_item_id)
+);

@@ -1,0 +1,27 @@
+server:
+  port: 8093
+spring:
+  application:
+    name: menu-service
+  cloud:
+    config:
+      import: optional:configserver:http://localhost:8888
+  datasource:
+    url: jdbc:postgresql://ep-morning-water-atadw7qz.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require
+    driver-class-name: org.postgresql.Driver
+    username: neondb_owner
+    password: npg_usCBTgn9do2t
+  sql:
+    init:
+      mode: always
+  sleuth:
+    sampler:
+      probability: 1.0
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceId:-}%X{spanId:-}] %logger{36} - %msg%n"

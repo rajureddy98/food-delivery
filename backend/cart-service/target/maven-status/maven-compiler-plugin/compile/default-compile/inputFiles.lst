@@ -1,0 +1,13 @@
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/CartServiceApplication.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/config/KafkaConfig.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/controller/CartController.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/model/AddCartItemRequest.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/model/Cart.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/model/CartItem.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/model/CartResponse.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/model/UpdateCartItemRequest.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/producer/CartEventProducer.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/producer/CartRestKafkaClient.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/repository/CartItemRepository.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/repository/CartRepository.java
+/workspaces/food-delivery/backend/cart-service/src/main/java/com/fooddelivery/cart/service/CartService.java
